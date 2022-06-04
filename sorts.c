@@ -6,116 +6,85 @@
 /*   By: mamellal <mamellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 14:44:55 by mamellal          #+#    #+#             */
-/*   Updated: 2022/03/02 15:22:49 by mamellal         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:10:22 by mamellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "push_swap.h"
 
-
-
-int ft_lstsize(t_stack *stack)
+void	check_errors(t_stack **head)
 {
-    t_stack *current;
-    int i;
+	t_stack	*saver;
+	t_stack	*tmp;
 
-    i = 0;
-    current = stack;
-    while(current != 0)
-    {   
-        i++;
-        current = current->next;
-    }
-
-    return (i);
+	saver = *head;
+	while (saver)
+	{
+		tmp = saver->next;
+		while (tmp)
+		{
+			if (tmp->content == saver->content)
+			{
+				write(2, "error\n", 7);
+				exit(0);
+			}
+			tmp = tmp->next;
+		}
+		saver = saver->next;
+	}
 }
 
-void print_stack(t_stack * head,char c,char *pos,int iteration)
+int	ft_lstsize(t_stack *stack)
 {
-    t_stack *current;
-    int i;
+	t_stack	*current;
+	int		i;
 
-    printf("t_stack %c in %s iteration %i : ",c,pos,iteration);
-    i = 0;
-    current = head;
-    while(current != 0)
-    {
-        printf("%i ",current->content);
-        current = current->next;
-        i++;
-    }
-     printf("\n");
+	i = 0;
+	current = stack;
+	while (current != 0)
+	{
+		i++;
+		current = current->next;
+	}
+	return (i);
 }
 
-void refresh(t_stack **top,t_stack **middle,t_stack ** bottom,t_stack ** a)
+void	refresh(t_stack **top, t_stack **middle, t_stack **bottom, t_stack **a)
 {
-    *top = *a;
-    *middle = (*top)->next;
-    *bottom = (*middle)->next;
+	*top = *a;
+	*middle = (*top)->next;
+	*bottom = (*middle)->next;
 }
 
-
-int get_min(t_stack **a,int size)
+int	check(int nb, int *tab, int size)
 {
-    
-    int i;
-    t_stack *current;
-    int minPos;
-    int min;
- 
-    current = *a;   
-    minPos = 0;
-    if(current)
-        min = current->content;
-    i = 0;
-    while(i < size)
-    {
-        if(current->content < min)
-        {
-             min = current->content;
-             minPos = i;
-        }
-        current = current->next;
-        i++;
-    }
-    return (minPos);
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (nb == tab[i])
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-int check_sorted(t_stack *a)
+int	get_min_chunk(t_stack **a, int size, int *chunk, int size_c)
 {
+	t_stack	*current;
+	int		i;
+	int		min;
 
-    // current = a->next;;
-    while(a->next != 0)
-    {
-        if(a->next->content < a->content)
-            return (0);
-        a = a->next;
-    }
-    return (1);
-}
-
-
-void s_t(t_stack **a)
-{
-    t_stack *top;
-    t_stack *bottom;
-    int i;
-    t_stack *middle;
-
-   refresh(&top,&middle,&bottom,a);
-    i = 0;
-    while(i < 3 && !check_sorted(*a))
-    {
-
-          if( bottom->content < top->content && middle->content < bottom->content)
-             ra(*a);
-          else if(top->content > middle->content)
-            sa(*a);
-          else if(middle->content > bottom->content)
-           rra(a);
-          refresh(&top,&middle,&bottom,a);
-          i++;
-    }
+	min = 2147483647;
+	i = 0;
+	current = *a;
+	while (current && i < size)
+	{
+		if (current->content < min && !check(current->content, chunk, size_c))
+			min = current->content;
+		current = current->next;
+		i++;
+	}
+	return (min);
 }
